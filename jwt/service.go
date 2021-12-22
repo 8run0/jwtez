@@ -26,6 +26,9 @@ const (
 func NewDefaultService() Service {
 	return &serviceImpl{Algo: "HS256", Secret: "randomstringgoeshere"}
 }
+func NewService(algo string, secret string) Service {
+	return &serviceImpl{Algo: algo, Secret: secret}
+}
 
 func (s *serviceImpl) Build() Builder {
 	return &builderImpl{

@@ -10,7 +10,6 @@ import (
 
 type Builder interface {
 	FromString(string) Builder
-	WithAlgo(algo string) Builder
 	WithClaim(key string, value string) Builder
 	WithExpiryIn(duration time.Duration) Builder
 	Token() (Token, error)
@@ -68,10 +67,6 @@ func (b *builderImpl) FromString(jwtStr string) Builder {
 	return b
 }
 
-func (b *builderImpl) WithAlgo(algo string) Builder {
-	b.Algo = algo
-	return b
-}
 func (t *tokenImpl) AddClaim(key string, value string) Token {
 	t.Claims[key] = value
 	return t
