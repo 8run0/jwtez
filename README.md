@@ -15,8 +15,7 @@ Create a new Service then use the services provided builder to build tokens for 
 ```go
 // New JWT Service With HS256 Hashing and the provided secret
 svc := jwt.NewService("HS256","super-duper-random-secret-key-goes-here-min-of-256-bytes")
-// Build a New token with the Claims provided and set and expiry for a duration
-// in the future
+// Build a New token with the Claims provided and set and expiry for a duration in the future
 token, _ := svc.Build().
 	WithClaim("user", "username").
 	WithClaim("role", "admin").
