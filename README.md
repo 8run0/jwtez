@@ -27,7 +27,10 @@ svc.Sign(token)
 // Print the token in the standard '.' separated base64 encoded format
 fmt.Println(token.String())
 // Rebuild token from the provided string
-parsedToken, _ := svc.Build().FromString(token.String()).Token()
+// eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOiI0NzkzODE1NDU4IiwiaWF0IjoiMTY0MDIxNTQ1OCIsInJvbGUiOiJhZG1pbiIsInVzZXIiOiJzdHV4bmV0In0.tq51cLI46J6e8CL9dk1Gl8hH4vMkXCdfzWzBiqbM6Co
+tokenStr := token.String()
+
+parsedToken, _ := svc.Build().FromString(tokenStr).Token()
 fmt.Println(parsedToken.String())
 // Verify that this rebuilt token is verified
 fmt.Println(svc.Verify(parsedToken))
