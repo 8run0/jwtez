@@ -46,7 +46,7 @@ func TestJwtSvc(t *testing.T) {
 		fmt.Printf("[%s]\n", tt.description)
 		var token jwt.Token
 		if tt.inputJwtToken == "" {
-			tkn, err := tt.jwtSvc.Build().WithAlgo("HS256").WithClaim("test", "test").WithExpiryIn(time.Hour).Token()
+			tkn, err := tt.jwtSvc.Build().WithClaim("test", "test").WithExpiryIn(time.Hour).Token()
 			token = tkn
 			if err != nil && !tt.willError {
 				t.Errorf("%s - unexpected error %s inputJwtToken:%s token%t willError%t", tt.description, err, tt.inputJwtToken, tkn, tt.willError)
