@@ -21,7 +21,7 @@ token, _ := svc.Build().
 	WithClaim("user", "username").
 	WithClaim("role", "admin").
 	WithClaim("iat", strconv.FormatInt(time.Now().Unix(), 10)).
-    WithExpiryIn(time.Hour * 24 * 365 * 100).Token()
+        WithExpiryIn(time.Hour * 24 * 365 * 100).Token()
 // Sign the token with the service
 svc.Sign(token)
 // Print the token in the standard '.' separated base64 encoded format
