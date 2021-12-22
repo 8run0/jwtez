@@ -12,7 +12,7 @@ JWT Token generator and service with support for the following sigining standard
 
 Create a new Service then use the services provided builder to build tokens for that service.  Sign with HS256 with the key and it will be used for all JWT tokens going forward.
 
-```
+```go
     // New JWT Service With HS256 Hashing and the provided secret
 	svc := jwt.NewService("HS256", "super-duper-random-secret-key-goes-here-min-of-256-bytes")
 	// Build a New token with the Claims provided and set and expiry for a duration
