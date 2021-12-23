@@ -18,8 +18,8 @@ type Builder interface {
 type builderImpl struct {
 	BuiltToken Token
 	Err        error
-	Claims     Claims
 	Algo       string
+	Claims     Claims
 	Expiry     time.Duration
 }
 

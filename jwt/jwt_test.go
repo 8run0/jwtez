@@ -9,7 +9,7 @@ import (
 	"github.com/8run0/jwtez/jwt"
 )
 
-var jwtSvc = jwt.NewDefaultService()
+var jwtSvc = jwt.NewService("HS256", "ksdjhfa8asldkjflk323lk2j4l2kfjsx8c8xckljzxcl", time.Second*30)
 
 const (
 	tokenSignedExpired    = "eyJUeXAiOiJKV1QiLCJBbGciOiJIUzI1NiJ9.eyJleHAiOiIxNjQwMTM3MzkyIiwiamZlIjoibGwiLCJtb2QiOiIxMjI7MTMiLCJyb2xlIjoiYWRtaW4iLCJ1c2VybmFtZSI6ImJydW5vIn0.M_xny9I69nAPZAPDLfOj0-2BGLVreeUp6e4P-MMQt7s"

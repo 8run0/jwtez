@@ -14,30 +14,24 @@ type Service interface {
 }
 
 type serviceImpl struct {
-	Algo   string
-	Secret string
+	Algo    string
+	Secret  string
+	Timeout time.Duration
 }
 
-const (
-	DefaultExpireDuration = time.Hour
-	DefaultSecret         = "brunos-secret-keybrunos-secret-keybrunos-secret-keybrunos-secret-key"
-)
-
-func NewDefaultService() Service {
-	return &serviceImpl{Algo: "HS256", Secret: "randomstringgoeshere"}
-}
-func NewService(algo string, secret string) Service {
-	return &serviceImpl{Algo: algo, Secret: secret}
+func NewService(algo string, secret string, timeout time.Duration) Service {
+	return &serviceImpl{Algo: algo, Secret: secret, Timeout: timeout}
 }
 
 func (s *serviceImpl) Build() Builder {
 	return &builderImpl{
 		Algo:   s.Algo,
-		Claims: make(Claims)}
+		Claims: make(Claims),
+		Expiry: s.Timeout}
 }
 
 func (s *serviceImpl) Verify(t Token) bool {
-	b64Sig := signPayload(t.Payload())
+	b64Sig := s.signPayload(t.Payload())
 	tSig := t.Signature()
 	return b64Sig == tSig && !t.IsExpired()
 }
@@ -46,12 +40,12 @@ func (s *serviceImpl) Sign(t Token) {
 	if t.IsExpired() {
 		return
 	}
-	b64Sig := signPayload(t.Payload())
+	b64Sig := s.signPayload(t.Payload())
 	t.Sign(b64Sig)
 }
 
-func signPayload(payload string) (base64Sig string) {
-	secret := base64.RawURLEncoding.EncodeToString([]byte(DefaultSecret))
+func (s *serviceImpl) signPayload(payload string) (base64Sig string) {
+	secret := base64.RawURLEncoding.EncodeToString([]byte(s.Secret))
 	hmacSha256 := hmac.New(crypto.SHA256.New, []byte(secret))
 	hmacSha256.Write([]byte(payload))
 	signature := hmacSha256.Sum(nil)
