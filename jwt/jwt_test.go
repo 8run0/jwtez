@@ -23,7 +23,7 @@ const (
 
 var tokenTests = []struct {
 	description   string
-	jwtSvc        jwt.Service
+	jwtSvc        *jwt.Service
 	inputJwtToken string
 	willError     bool
 }{
@@ -44,12 +44,12 @@ var tokenTests = []struct {
 func TestJwtSvc(t *testing.T) {
 	for _, tt := range tokenTests {
 		fmt.Printf("[%s]\n", tt.description)
-		var token jwt.Token
+		var token *jwt.Token
 		if tt.inputJwtToken == "" {
 			tkn, err := tt.jwtSvc.Build().WithClaim("test", "test").WithExpiryIn(time.Hour).Token()
 			token = tkn
 			if err != nil && !tt.willError {
-				t.Errorf("%s - unexpected error %s inputJwtToken:%s token%t willError%t", tt.description, err, tt.inputJwtToken, tkn, tt.willError)
+				t.Errorf("%s - unexpected error %s inputJwtToken:%s token%s willError%t", tt.description, err, tt.inputJwtToken, token.String(), tt.willError)
 			}
 			if tt.willError {
 				continue
@@ -58,7 +58,7 @@ func TestJwtSvc(t *testing.T) {
 			tkn, err := tt.jwtSvc.Build().FromString(tt.inputJwtToken).Token()
 			token = tkn
 			if err != nil && !tt.willError {
-				t.Errorf("%s - unexpected error %s inputJwtToken:%s token%t willError%t", tt.description, err, tt.inputJwtToken, token, tt.willError)
+				t.Errorf("%s - unexpected error %s inputJwtToken:%s token%s willError%t", tt.description, err, tt.inputJwtToken, token.String(), tt.willError)
 			}
 			if token != nil {
 				token.IsExpired()
@@ -70,20 +70,20 @@ func TestJwtSvc(t *testing.T) {
 		}
 		verified := tt.jwtSvc.Verify(token)
 		if verified {
-			t.Errorf("%s - unexpected verification inputJwtToken:%s token%t willError%t", tt.description, tt.inputJwtToken, token, tt.willError)
+			t.Errorf("%s - unexpected verification inputJwtToken:%s token%s willError%t", tt.description, tt.inputJwtToken, token.String(), tt.willError)
 		}
 		if token.GetClaim("test") != "test" {
-			t.Errorf("%s - unexpected missing test claim inputJwtToken:%s token%t willError%t", tt.description, tt.inputJwtToken, token, tt.willError)
+			t.Errorf("%s - unexpected missing test claim inputJwtToken:%s token%s willError%t", tt.description, tt.inputJwtToken, token.String(), tt.willError)
 		}
 		tt.jwtSvc.Sign(token)
 		verified = tt.jwtSvc.Verify(token)
 		if !token.IsExpired() && !verified {
-			t.Errorf("%s - unexpected post sign verification inputJwtToken:%s token%t willError%t", tt.description, tt.inputJwtToken, token, tt.willError)
+			t.Errorf("%s - unexpected post sign verification inputJwtToken:%s token%s willError%t", tt.description, tt.inputJwtToken, token.String(), tt.willError)
 		}
 		jwtValidator, _ := regexp.Compile("^[A-Za-z0-9-_=]+.[A-Za-z0-9-_=]+.?[A-Za-z0-9-_.+/=]*$")
 		isJWT := jwtValidator.Match([]byte(token.String()))
 		if !isJWT {
-			t.Errorf("%s - unexpected output not a JWT inputJwtToken:%s token%t willError%t", tt.description, tt.inputJwtToken, token, tt.willError)
+			t.Errorf("%s - unexpected output not a JWT inputJwtToken:%s token%s willError%t", tt.description, tt.inputJwtToken, token.String(), tt.willError)
 		}
 	}
 }

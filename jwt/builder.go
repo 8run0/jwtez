@@ -8,36 +8,29 @@ import (
 	"time"
 )
 
-type Builder interface {
-	FromString(string) Builder
-	WithClaim(key string, value string) Builder
-	WithExpiryIn(duration time.Duration) Builder
-	Token() (Token, error)
-}
-
-type builderImpl struct {
-	BuiltToken Token
+type Builder struct {
+	BuiltToken *Token
 	Err        error
 	Algo       string
 	Claims     Claims
 	Expiry     time.Duration
 }
 
-func (b *builderImpl) Token() (Token, error) {
+func (b *Builder) Token() (*Token, error) {
 	if b.Err != nil {
 		return nil, b.Err
 	}
 	if b.BuiltToken != nil {
 		return b.BuiltToken, nil
 	}
-	b.BuiltToken = &tokenImpl{Header: Header{
+	b.BuiltToken = &Token{Header: Header{
 		Alg: b.Algo,
 		Typ: "JWT",
 	}, Claims: b.Claims}
 	return b.BuiltToken, nil
 }
 
-func (b *builderImpl) FromString(jwtStr string) Builder {
+func (b *Builder) FromString(jwtStr string) *Builder {
 	parts := strings.Split(jwtStr, ".")
 
 	headerJson, err := base64.RawURLEncoding.DecodeString(parts[0])
@@ -59,7 +52,7 @@ func (b *builderImpl) FromString(jwtStr string) Builder {
 		b.Err = err
 	}
 	b64Sig := parts[2]
-	b.BuiltToken = &tokenImpl{
+	b.BuiltToken = &Token{
 		Header:          *header,
 		Claims:          claims,
 		Base64Signature: b64Sig,
@@ -67,15 +60,15 @@ func (b *builderImpl) FromString(jwtStr string) Builder {
 	return b
 }
 
-func (t *tokenImpl) AddClaim(key string, value string) Token {
+func (t *Token) AddClaim(key string, value string) *Token {
 	t.Claims[key] = value
 	return t
 }
-func (b *builderImpl) WithClaim(key string, value string) Builder {
+func (b *Builder) WithClaim(key string, value string) *Builder {
 	b.Claims[key] = value
 	return b
 }
-func (b *builderImpl) WithExpiryIn(duration time.Duration) Builder {
+func (b *Builder) WithExpiryIn(duration time.Duration) *Builder {
 	b.Expiry = duration
 	expiry := strconv.FormatInt(time.Now().Add(duration).Unix(), 10)
 	b.WithClaim("exp", expiry)
