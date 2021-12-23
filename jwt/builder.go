@@ -3,7 +3,6 @@ package jwt
 import (
 	"encoding/base64"
 	"encoding/json"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -46,7 +45,7 @@ func (b *Builder) FromString(jwtStr string) *Builder {
 	if err != nil {
 		b.Err = err
 	}
-	var claims = map[string]string{}
+	var claims = map[string]interface{}{}
 	err = json.Unmarshal(claimsJson, &claims)
 	if err != nil {
 		b.Err = err
@@ -60,13 +59,13 @@ func (b *Builder) FromString(jwtStr string) *Builder {
 	return b
 }
 
-func (b *Builder) WithClaim(key string, value string) *Builder {
+func (b *Builder) WithClaim(key string, value interface{}) *Builder {
 	b.Claims[key] = value
 	return b
 }
 func (b *Builder) WithExpiryIn(duration time.Duration) *Builder {
 	b.Expiry = duration
-	expiry := strconv.FormatInt(time.Now().Add(duration).Unix(), 10)
+	expiry := time.Now().Add(duration).Unix()
 	b.WithClaim("exp", expiry)
 	return b
 }

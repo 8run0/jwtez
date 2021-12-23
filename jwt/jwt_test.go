@@ -85,5 +85,6 @@ func TestJwtSvc(t *testing.T) {
 		if !isJWT {
 			t.Errorf("%s - unexpected output not a JWT inputJwtToken:%s token%s willError%t", tt.description, tt.inputJwtToken, token.String(), tt.willError)
 		}
+		fmt.Println(token)
 	}
 }
