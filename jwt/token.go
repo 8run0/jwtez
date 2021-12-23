@@ -54,6 +54,10 @@ func (t *Token) IsExpired() bool {
 func (t *Token) String() string {
 	return strings.Join([]string{t.Header.Base64String(), t.Claims.Base64String(), t.Base64Signature}, ".")
 }
+func (t *Token) AddClaim(key string, value string) *Token {
+	t.Claims[key] = value
+	return t
+}
 func toBase64(in []byte) string {
 	return strings.TrimRight(base64.URLEncoding.EncodeToString(in), "=")
 }

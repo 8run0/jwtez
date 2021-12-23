@@ -60,10 +60,6 @@ func (b *Builder) FromString(jwtStr string) *Builder {
 	return b
 }
 
-func (t *Token) AddClaim(key string, value string) *Token {
-	t.Claims[key] = value
-	return t
-}
 func (b *Builder) WithClaim(key string, value string) *Builder {
 	b.Claims[key] = value
 	return b
