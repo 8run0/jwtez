@@ -19,7 +19,7 @@ svc := jwt.NewService("HS256","super-duper-random-secret-key-goes-here-min-of-25
 token, _ := svc.Build().
 	WithClaim("user", "username").
 	WithClaim("role", "admin").
-	WithClaim("iat", strconv.FormatInt(time.Now().Unix(), 10)).
+	WithClaim("iat", time.Now().Unix()
         WithExpiryIn(time.Hour * 24 * 365 * 100).Token()
 // Sign the token with the service
 svc.Sign(token)
